@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WattLead V15 — Enedis × Sirene</title>
+<style>
+:root{font-family:Inter,system-ui,Arial,sans-serif;color:#18304f;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}header{background:#183a70;color:white;padding:23px 4%}h1{margin:0;font-size:27px}header p{margin:5px 0 0;color:#dce9fa}main{max-width:1650px;margin:22px auto;padding:0 16px}.panel{background:white;border-radius:13px;padding:20px;margin-bottom:16px;box-shadow:0 3px 16px #12254a10}h2{margin:0 0 16px;font-size:18px}.fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:start}.field{min-width:0!important}.field.wide{grid-column:span 2;min-width:0!important}.field small{line-height:1.35;min-height:32px}.legalPicker{position:relative}.legalPicker summary{list-style:none;border:1px solid #cbd5e1;border-radius:8px;padding:11px;background:white;cursor:pointer;font-weight:500}.legalPicker summary::-webkit-details-marker{display:none}.legalPicker[open] .legalMenu{position:absolute;z-index:5;top:100%;left:0;width:min(360px,90vw);background:white;padding:12px;border:1px solid #d4dce8;border-radius:10px;box-shadow:0 12px 30px #14264b26;max-height:300px;overflow:auto}.legalPicker .legal{display:grid;grid-template-columns:1fr 1fr}.legalPicker .legal label{padding:7px}@media(max-width:1000px){.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){.fields{grid-template-columns:1fr}.field.wide{grid-column:span 1}}.field{display:flex;flex-direction:column;gap:6px;min-width:140px}.field.wide{flex:1;min-width:260px}label{font-size:13px;font-weight:700}input,select,button{font:inherit;border-radius:8px;padding:10px;border:1px solid #cbd5e1}input{width:100%}button{background:#e53c87;border:0;color:white;font-weight:700;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}button.alt{background:#245b9d}small,.hint{color:#687a90;font-size:12px}.legal{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px;margin-top:10px}.legal label{display:flex;gap:8px;align-items:center;background:#f2f5fa;border-radius:8px;padding:10px;font-weight:500}.legal input{width:auto}.metrics{display:flex;flex-wrap:wrap;gap:12px}.metric{background:#edf3fa;padding:14px 18px;border-radius:10px;min-width:175px}.metric strong{display:block;font-size:22px}.scroll{overflow:auto;max-height:70vh}table{width:100%;min-width:1950px;border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid #e7ebf2;vertical-align:top}th{background:#edf2f9;position:sticky;top:0;z-index:1}td{font-size:13px}a{color:#185caa}#status{margin-top:15px;white-space:pre-wrap;color:#315477}.error{color:#b42318!important}.warning{color:#986200}.pill{display:inline-block;border-radius:6px;background:#e8eef8;padding:3px 7px}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.muted{color:#687a90}details{margin-top:16px}summary{cursor:pointer;font-weight:700}
+ .tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{background:#e6edf7;color:#23436d}.tabs button.active{background:#183a70;color:white}.crmtools{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.crmtools input{max-width:300px}.jobbar{background:#edf3fa;padding:12px;border-radius:9px;margin-top:12px}.jobbar progress{width:100%;height:16px}.hidden{display:none!important}dialog{border:0;border-radius:14px;padding:25px;max-width:480px;box-shadow:0 15px 50px #15284655}dialog::backdrop{background:#0b193b88}
+.danger{background:#b42318}.subtabs{display:flex;gap:10px;margin:20px 0 8px}.subpanel{padding:16px;border:1px solid #e2e8f0;border-radius:10px}.importrow{display:flex;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding:12px 0;flex-wrap:wrap}.importrow p{margin:4px 0;color:#687a90;font-size:12px}.importrow button{padding:8px 11px}.crmtools{align-items:center}#crmSelectAll,.crmPick{width:17px;height:17px}#crmGeoNote{margin-top:4px}
+</style>
+</head>
+<body>
+<header><h1>⚡ WattLead V15</h1><p>Consommations Enedis · Enrichissement automatique Sirene · Prospection B2B</p></header>
+<main><nav class="tabs"><button id="tabSearch" class="active" type="button">Recherche & enrichissement</button><button id="tabCRM" type="button">Base prospects CRM</button></nav><div id="searchView">
+<section class="panel"><h2>Recherche</h2><div class="fields">
+<div class="field"><label for="city">Commune</label><input id="city" value="Lyon"></div>
+<div class="field"><label for="radius">Rayon</label><select id="radius"><option value="0">Commune seule</option><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="30">30 km</option><option value="50">50 km</option></select></div>
+<div class="field wide"><label for="nafs">Codes NAF Sirene</label><input id="nafs" placeholder="Ex. 10.71C, 25.62B, 33.12Z"><small>Sépare les codes par des virgules. « 10 » inclut toutes les activités 10 ; « 10.71C » cible uniquement cette activité.</small></div>
+<div class="field"><label for="mwhMin">MWh/an minimum</label><input id="mwhMin" type="number" min="0" value="0"></div>
+<div class="field"><label for="mwhMax">MWh/an maximum</label><input id="mwhMax" type="number" min="0" placeholder="Illimité"></div>
+<div class="field"><label for="staffMin">Salariés minimum</label><input id="staffMin" type="number" min="0" placeholder="Tous"></div>
+<div class="field"><label for="staffMax">Salariés maximum</label><input id="staffMax" type="number" min="0" placeholder="Tous"></div>
+<div class="field"><label for="createdMin">Créée à partir de</label><input id="createdMin" type="date"></div>
+<div class="field"><label for="createdMax">Créée avant le</label><input id="createdMax" type="date"></div>
+<div class="field"><label for="pageSize">Lignes Enedis/commune</label><select id="pageSize"><option>50</option><option selected>100</option><option>200</option></select></div>
+</div>
+<div class="field" style="margin-top:14px;max-width:320px"><label>Formes juridiques</label><details class="legalPicker" id="legalPicker"><summary id="legalSummary">Toutes les formes juridiques ▾</summary><div class="legalMenu"><div class="legal" id="legalOptions"></div><p class="hint">Aucune case cochée = toutes les formes. SASU/EURL seulement si identifiables.</p></div></details></div>
+<div class="actions" style="margin-top:18px"><button id="search">Rechercher et enrichir</button><button id="export" class="alt" disabled>Exporter CSV</button><button id="reset" class="alt" type="button">Effacer les filtres</button></div>
+<div class="jobbar"><strong id="jobState">Aucun traitement en cours</strong><progress id="jobProgress" max="100" value="0"></progress><div class="actions" style="margin-top:8px"><button id="pause" class="alt" type="button" disabled>Mettre en pause</button><button id="resume" class="alt" type="button" disabled>Reprendre</button><button id="retry" class="alt" type="button" disabled>Réessayer les erreurs</button></div></div><div id="status" role="status"></div></section>
+<section class="panel"><div class="metrics"><div class="metric"><small>Entreprises affichées</small><strong id="shown">0</strong></div><div class="metric"><small>Adresses Enedis retenues</small><strong id="addressCount">0</strong></div><div class="metric"><small>Correspondances Sirene</small><strong id="matches">0</strong></div><div class="metric"><small>Enrichissement</small><strong id="progress">—</strong></div></div></section>
+<section class="panel"><h2>Résultats</h2><div class="scroll"><table><thead><tr><th>Entreprise</th><th>Forme juridique</th><th>SIREN</th><th>SIRET</th><th>NAF Sirene</th><th>Activité NAF</th><th>Effectif réel</th><th>Tranche effectif</th><th>Création</th><th>Prénom et nom du dirigeant</th><th>Fonction</th><th>Adresse Enedis</th><th>Commune</th><th>Année Enedis</th><th>MWh/an</th><th>Google Maps</th></tr></thead><tbody id="results"><tr><td colspan="16">Lance une recherche.</td></tr></tbody></table></div></section>
+<section class="panel"><small>Sources : <a href="https://opendata.enedis.fr/" target="_blank" rel="noopener">Enedis</a>, <a href="https://recherche-entreprises.api.gouv.fr/" target="_blank" rel="noopener">Recherche d'entreprises</a>, <a href="https://geo.api.gouv.fr/" target="_blank" rel="noopener">API Géo</a>. La consommation Enedis correspond à une adresse et à un secteur NAF2 ; son attribution à une société donnée n'est pas prouvée par le rapprochement. Le lien Google Maps ouvre une recherche ciblée, pas nécessairement la fiche exacte. Les résultats sont partiels (département d'origine, 80 communes maximum, premières lignes par commune, 20 premiers résultats Sirene).</small></section>
+</div><section id="crmView" class="panel hidden"><h2>Ma base de prospects</h2><p class="hint">Données conservées sur ce navigateur. Les filtres n'appellent aucune API. Un SIRET = une fiche.</p>
+<div class="fields">
+<div class="field wide"><label>Recherche libre</label><input id="crmQuery" placeholder="Entreprise, SIRET, SIREN, adresse…"></div>
+<div class="field"><label>Commune</label><input id="crmCity" placeholder="Ex. Lyon"></div>
+<div class="field"><label>Rayon</label><select id="crmRadius"><option value="0">Commune seule</option><option value="5">5 km</option><option value="10">10 km</option><option value="20">20 km</option><option value="30">30 km</option><option value="50">50 km</option></select></div>
+<div class="field wide"><label>Codes NAF Sirene</label><input id="crmNafs" placeholder="Ex. 10.71C, 25.62B, 33.12Z"><small>Plusieurs codes séparés par une virgule.</small></div>
+<div class="field"><label>MWh/an minimum</label><input id="crmMwhMin" type="number" min="0" placeholder="Tous"></div>
+<div class="field"><label>MWh/an maximum</label><input id="crmMwhMax" type="number" min="0" placeholder="Tous"></div>
+<div class="field"><label>Salariés minimum</label><input id="crmStaffMin" type="number" min="0" placeholder="Tous"></div>
+<div class="field"><label>Salariés maximum</label><input id="crmStaffMax" type="number" min="0" placeholder="Tous"></div>
+<div class="field"><label>Créée à partir de</label><input id="crmCreatedMin" type="date"></div>
+<div class="field"><label>Créée avant le</label><input id="crmCreatedMax" type="date"></div>
+<div class="field"><label>Formes juridiques</label><details class="legalPicker"><summary id="crmLegalSummary">Toutes les formes juridiques ▾</summary><div class="legalMenu"><div class="legal" id="crmLegalOptions"></div></div></details></div>
+</div>
+<div class="crmtools"><button id="crmExport" class="alt" type="button">Exporter les résultats filtrés</button><button id="crmRefresh" class="alt" type="button">Actualiser</button><button id="crmClearFilters" class="alt" type="button">Effacer les filtres</button><button id="crmDeleteSelected" class="danger" type="button">Supprimer la sélection</button></div>
+<p id="crmCount"></p><p id="crmGeoNote" class="hint"></p>
+<div class="scroll"><table><thead><tr><th><input type="checkbox" id="crmSelectAll" title="Sélectionner les résultats filtrés"></th><th>Entreprise</th><th>Forme</th><th>SIRET</th><th>NAF</th><th>Activité</th><th>Effectif réel</th><th>Tranche</th><th>Création</th><th>Dirigeants</th><th>Fonctions</th><th>Commune</th><th>MWh</th><th>Maps</th></tr></thead><tbody id="crmRows"></tbody></table></div>
+<div class="subtabs"><button id="showImports" class="alt" type="button">Historique des imports</button><button id="showTrash" class="alt" type="button">Corbeille</button></div>
+<section id="importsPanel" class="subpanel"><h3>Historique des imports</h3><p class="hint">Un lot correspond à une opération d'enregistrement. Supprimer un lot conserve les SIRET présents dans d'autres lots.</p><div id="importsList"></div></section>
+<section id="trashPanel" class="subpanel hidden"><h3>Corbeille</h3><p class="hint">Restaurer une suppression ou effacer définitivement une entrée.</p><div id="trashList"></div></section>
+</section><dialog id="exportDialog"><h2>Exporter les prospects</h2><p>Souhaites-tu également enregistrer les entreprises filtrées dans la BDD WattLead ?</p><div class="actions"><button id="exportOnly" class="alt">Exporter uniquement</button><button id="exportAndSave">Exporter et enregistrer</button><button id="saveOnly" class="alt">Enregistrer uniquement</button><button id="cancelExport" class="alt">Annuler</button></div></dialog></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const ENEDIS='https://opendata.enedis.fr/data-fair/api/v1/datasets/consommation-annuelle-entreprise-par-adresse';
+const SIRENE='https://recherche-entreprises.api.gouv.fr/search';
+let sources=[],prospects=[],processed=0,busy=false,paused=false,failedSources=[],jobToken=0;
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const dbPromise=new Promise((resolve,reject)=>{const req=indexedDB.open('wattlead-v13',2);req.onupgradeneeded=()=>{const db=req.result;for(const [name,key] of [['crm','siret'],['cache','key'],['jobs','id'],['imports','id'],['trash','id']])if(!db.objectStoreNames.contains(name))db.createObjectStore(name,{keyPath:key});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+async function storePut(table,value){const db=await dbPromise;return new Promise((resolve,reject)=>{const t=db.transaction(table,'readwrite');t.objectStore(table).put(value);t.oncomplete=resolve;t.onerror=()=>reject(t.error);});}
+async function storeGet(table,key){const db=await dbPromise;return new Promise((resolve,reject)=>{const t=db.transaction(table,'readonly');const r=t.objectStore(table).get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+async function storeAll(table){const db=await dbPromise;return new Promise((resolve,reject)=>{const t=db.transaction(table,'readonly');const r=t.objectStore(table).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+async function storeDelete(table,key){const db=await dbPromise;return new Promise((resolve,reject)=>{const t=db.transaction(table,'readwrite');t.objectStore(table).delete(key);t.oncomplete=resolve;t.onerror=()=>reject(t.error);});}
+async function saveJob(){await storePut('jobs',{id:'current',sources,prospects,processed,failedSources,updated:new Date().toISOString()});}
+let lastRequest=0;
+async function sireneApi(url){const cacheKey=url;const saved=await storeGet('cache',cacheKey);if(saved&&Date.now()-saved.time<30*86400000)return saved.data;
+ for(let attempt=0;attempt<5;attempt++){const delay=Math.max(0,1800-(Date.now()-lastRequest));if(delay)await wait(delay);lastRequest=Date.now();let response;
+ try{response=await fetch(url,{headers:{Accept:'application/json'}});}catch(e){if(attempt===4)throw e;await wait(2500*(attempt+1));continue;}
+ if(response.ok){const data=await response.json();await storePut('cache',{key:cacheKey,data,time:Date.now()});return data;}
+ if(response.status!==429&&response.status<500)throw Error('Sirene HTTP '+response.status);
+ if(attempt===4)throw Error('Sirene HTTP '+response.status);
+ const retry=response.headers.get('Retry-After');const seconds=Number(retry);const backoff=retry&&Number.isFinite(seconds)&&seconds>=0?seconds*1000:Math.min(90000,5000*2**attempt);$('jobState').textContent='API limitée : attente de '+Math.ceil(backoff/1000)+' secondes';await wait(backoff);
+ }throw Error('Sirene : échec après plusieurs tentatives');}
+
+const legalNames={
+ 'SAS':'SAS','SASU':'SASU','SARL':'SARL','EURL':'EURL','SCI':'SCI','SA':'SA','SNC':'SNC','EI':'Entreprise individuelle','ASSO':'Association','OTHER':'Autres'
+};
+// Les codes juridiques INSEE distinguent des catégories, pas systématiquement l'unicité de l'associé.
+function legalForm(code,name=''){
+ const c=String(code??'').trim(),n=String(name??'').toUpperCase();
+ if(/\bSASU\b/.test(n))return 'SASU';
+ if(/\bEURL\b/.test(n))return 'EURL';
+ if(c==='5710'||c==='5720')return 'SAS';
+ if(c==='5499'||c==='5498'||c==='5485')return 'SARL';
+ if(c==='6540'||c==='6541'||c==='6542'||c==='6543'||c==='6544'||c==='6545'||c==='6546'||c==='6547'||c==='6548'||c==='6549')return 'SCI';
+ if(c.startsWith('55'))return 'SA';
+ if(c.startsWith('52'))return 'SNC';
+ if(c.startsWith('1'))return 'EI';
+ if(c.startsWith('92'))return 'ASSO';
+ return 'OTHER';
+}
+function legalLabel(code,category){
+ const k=legalForm(code,category);
+ return k==='OTHER'?(category||'Autre forme juridique'):legalNames[k];
+}
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const html=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>n==null?'—':new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2}).format(n);
+const naf2=s=>(String(s??'').match(/^\s*(\d{2})/)||[])[1]||'';
+function nafList(){return [...new Set($('nafs').value.split(',').map(norm).filter(Boolean))];}
+function validNafs(){const a=nafList();if(a.some(s=>!/^\d{2}(?:\d{2}[A-Z]?)?$/.test(s)))throw Error('Code NAF invalide. Exemples : 10, 1071C, 2562B. Sépare les codes par des virgules.');return a;}
+function nafMatch(code,requested){const c=norm(code);return !requested.length||requested.some(n=>c.startsWith(n));}
+function nafSectorMatch(code,requested){return !requested.length||requested.some(n=>naf2(n)===naf2(code));}
+function field(o,patterns){for(const p of patterns){const k=Object.keys(o||{}).find(k=>p.test(k)&&o[k]!=null&&o[k]!=='');if(k)return {key:k,value:o[k]};}return null;}
+async function api(url){const r=await fetch(url,{headers:{Accept:'application/json'}});if(!r.ok)throw Error('HTTP '+r.status+' : '+(await r.text()).slice(0,180));return r.json();}
+function setStatus(s,err=false){$('status').textContent=s;$('status').className=err?'error':'';}
+function number(x){const n=Number(String(x??'').replace(/\s/g,'').replace(',','.'));return Number.isFinite(n)?n:null;}
+function normalizeEnedis(r){
+ const c=field(r,[/^consommation_annuelle/i,/^consommation.*(kwh|mwh)/i,/^conso.*(kwh|mwh)/i,/^consommation/i,/^conso/i]);
+ let kwh=c?number(c.value):null;
+ if(kwh!=null&&/mwh/i.test(c.key)&&!/kwh/i.test(c.key))kwh*=1000;
+ return {address:String(field(r,[/^adresse/i,/adresse/i,/voie/i])?.value||''),city:String(field(r,[/^nom_?commune$/i,/^commune$/i,/^libelle_?commune$/i])?.value||''),year:field(r,[/^annee/i,/année/i,/year/i])?.value||'',nafEnedis:naf2(field(r,[/^code_secteur_naf2$/i,/^code_naf2$/i,/^naf2$/i])?.value),kwh,raw:r};
+}
+function km(a,b,c,d){const R=Math.PI/180,p=(c-a)*R,l=(d-b)*R,h=Math.sin(p/2)**2+Math.cos(a*R)*Math.cos(c*R)*Math.sin(l/2)**2;return 12742*Math.asin(Math.sqrt(h));}
+async function getCommunes(q,radius){
+ const u=/^\d{5}$/.test(q)?'https://geo.api.gouv.fr/communes/'+q+'?fields=nom,code,centre,codeDepartement':'https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(q)+'&fields=nom,code,centre,codeDepartement&limit=10';
+ const d=await api(u),base=Array.isArray(d)?d.find(x=>norm(x.nom)===norm(q))||d[0]:d;
+ if(!base?.centre?.coordinates)throw Error('Commune introuvable.');
+ if(!radius)return [base];
+ const all=await api('https://geo.api.gouv.fr/departements/'+base.codeDepartement+'/communes?fields=nom,code,centre');
+ const [lon,lat]=base.centre.coordinates;
+ return all.filter(x=>x.centre?.coordinates&&km(lat,lon,x.centre.coordinates[1],x.centre.coordinates[0])<=radius).sort((a,b)=>km(lat,lon,a.centre.coordinates[1],a.centre.coordinates[0])-km(lat,lon,b.centre.coordinates[1],b.centre.coordinates[0])).slice(0,80);
+}
+function addressMatch(a,b){const x=norm(a),y=norm(b);return x.length>=8&&y.length>=8&&(x.includes(y)||y.includes(x));}
+const ranges={'00':[0,0],'01':[1,2],'02':[3,5],'03':[6,9],'11':[10,19],'12':[20,49],'21':[50,99],'22':[100,199],'31':[200,249],'32':[250,499],'41':[500,999],'42':[1000,1999],'51':[2000,4999],'52':[5000,9999],'53':[10000,Infinity]};
+function staff(e,c){
+ const exact=e.nombre_salaries??c.nombre_salaries;
+ if(exact!==null&&exact!==undefined&&exact!==''&&Number.isFinite(Number(exact))){const n=Number(exact);return {min:n,max:n,label:'Non renseignée',exact:n};}
+ const code=String(e.tranche_effectif_salarie??c.tranche_effectif_salarie??e.tranche_effectif??c.tranche_effectif??'').toUpperCase();
+ const r=ranges[code];return r?{min:r[0],max:r[1],label:r[0]+' à '+(Number.isFinite(r[1])?r[1]:'plus'),exact:null}: {min:null,max:null,label:'Non renseignée',exact:null};
+}
+const nafExactLabels={
+'1071C':'Boulangerie et boulangerie-pâtisserie','1071D':'Pâtisserie','1011Z':'Transformation et conservation de la viande de boucherie',
+'2562B':'Mécanique industrielle','3312Z':'Réparation de machines et équipements mécaniques','6820B':'Location de terrains et autres biens immobiliers',
+'6201Z':'Programmation informatique','6202A':'Conseil en systèmes et logiciels informatiques','7022Z':'Conseil pour les affaires et autres conseils de gestion',
+'7112B':'Ingénierie, études techniques','4321A':'Travaux d’installation électrique dans tous locaux','4941A':'Transports routiers de fret interurbains',
+'5610A':'Restauration traditionnelle','5610C':'Restauration de type rapide','4711D':'Supermarchés','8690D':'Activités des infirmiers et des sages-femmes'
+};
+const nafSectorLabels={'10':'Industries alimentaires','11':'Fabrication de boissons','13':'Fabrication de textiles','14':'Industrie de l’habillement','16':'Travail du bois','17':'Industrie du papier et du carton','20':'Industrie chimique','22':'Fabrication de produits en caoutchouc et en plastique','23':'Fabrication d’autres produits minéraux non métalliques','24':'Métallurgie','25':'Fabrication de produits métalliques','26':'Fabrication de produits informatiques, électroniques et optiques','27':'Fabrication d’équipements électriques','28':'Fabrication de machines et équipements','29':'Industrie automobile','31':'Fabrication de meubles','33':'Réparation et installation de machines et équipements','41':'Construction de bâtiments','43':'Travaux de construction spécialisés','46':'Commerce de gros','47':'Commerce de détail','49':'Transports terrestres','56':'Restauration','62':'Programmation, conseil et autres activités informatiques','68':'Activités immobilières','70':'Activités des sièges sociaux et conseil de gestion','71':'Architecture et ingénierie','82':'Activités administratives et de soutien aux entreprises','86':'Activités pour la santé humaine'};
+function nafDescription(code,apiLabel){
+ if(apiLabel&&String(apiLabel).trim())return String(apiLabel).trim();
+ const key=norm(code);
+ return nafExactLabels[key]|| (nafSectorLabels[naf2(code)]?nafSectorLabels[naf2(code)]+' (secteur NAF2, libellé détaillé non fourni)':'Activité détaillée non renseignée');
+}
+function directorInfo(c){const list=c.dirigeants||[];return {names:list.map(z=>[z.prenoms||z.prenom,z.nom].filter(Boolean).join(' ')).filter(Boolean).join(' | '),roles:list.map(z=>z.qualite||z.fonction||'').filter(Boolean).join(' | ')}};
+function googleUrl(p){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([p.name,p.source.address,p.source.city].filter(Boolean).join(' '));}
+function selectedLegal(){return [...document.querySelectorAll('#legalOptions input:checked')].map(x=>x.value);}
+function filtered(){
+ const requested=nafList(),legal=selectedLegal(),mMin=Number($('mwhMin').value||0),mMax=$('mwhMax').value===''?Infinity:Number($('mwhMax').value),sMin=$('staffMin').value===''?null:Number($('staffMin').value),sMax=$('staffMax').value===''?null:Number($('staffMax').value),dMin=$('createdMin').value,dMax=$('createdMax').value;
+ return prospects.filter(p=>{
+ const x=p.source;
+ if(x.kwh==null||x.kwh/1000<mMin||x.kwh/1000>mMax||!nafMatch(p.naf,requested))return false;
+ if(legal.length&&!legal.includes(p.legalKey))return false;
+ if(sMin!==null&&(p.staff.max==null||p.staff.max<sMin))return false;
+ if(sMax!==null&&(p.staff.min==null||p.staff.min>sMax))return false;
+ if(dMin&&(!p.creation||p.creation<dMin))return false;
+ if(dMax&&(!p.creation||p.creation>dMax))return false;
+ return true;
+ }).sort((a,b)=>b.source.kwh-a.source.kwh);
+}
+function render(){
+ const a=filtered();$('shown').textContent=a.length;$('addressCount').textContent=sources.length;$('matches').textContent=prospects.length;$('progress').textContent=processed+'/'+sources.length;$('export').disabled=!a.length;
+ $('results').innerHTML=a.length?a.map(p=>`<tr><td><strong>${html(p.name)}</strong></td><td>${html(p.legal)}</td><td>${html(p.siren)}</td><td>${html(p.siret)}</td><td><span class="pill">${html(p.naf)}</span></td><td>${html(p.nafLabel)}</td><td>${p.staff.exact==null?'—':fmt(p.staff.exact)}</td><td>${html(p.staff.label)}</td><td>${html(p.creation)}</td><td>${html(p.directorNames)}</td><td>${html(p.directorRoles)}</td><td>${html(p.source.address)}</td><td>${html(p.source.city)}</td><td>${html(p.source.year)}</td><td><strong>${fmt(p.source.kwh/1000)}</strong></td><td><a target="_blank" rel="noopener" href="${googleUrl(p)}">Voir sur Maps</a></td></tr>`).join(''):'<tr><td colspan="16">Aucune correspondance affichable pour ces filtres.</td></tr>';
+}
+async function enrich(x,requested){
+ const d=await sireneApi(SIRENE+'?q='+encodeURIComponent(x.address+' '+x.city)+'&per_page=20');
+ const out=new Map();
+ for(const c of d.results||[]){
+ const establishments=[...(c.matching_etablissements||[]),...(c.siege?[c.siege]:[])];
+ for(const e of establishments){
+ const code=String(e.activite_principale||e.code_naf||c.activite_principale||'');
+ if(!e.siret||!x.nafEnedis||naf2(code)!==x.nafEnedis||!nafMatch(code,requested)||!addressMatch(x.address,e.adresse||''))continue;
+ const legalCode=String(c.nature_juridique||c.categorie_juridique||c.code_categorie_juridique||'');
+ const legalText=String(c.libelle_nature_juridique||c.libelle_categorie_juridique||c.forme_juridique||'');
+ const creation=String(e.date_creation||e.date_creation_etablissement||c.date_creation||'').slice(0,10);
+ const name=c.nom_complet||c.nom_raison_sociale||c.denomination||'Entreprise';
+ const nafLabel=nafDescription(code,e.libelle_activite_principale||c.libelle_activite_principale||e.libelle_naf||c.libelle_naf);
+ const directors=directorInfo(c);
+ out.set(e.siret,{source:x,name,siren:c.siren||e.siret.slice(0,9),siret:e.siret,naf:code,nafLabel,staff:staff(e,c),legalKey:legalForm(legalCode,legalText),legal:legalLabel(legalCode,legalText),legalCode,creation,directorNames:directors.names,directorRoles:directors.roles,confidence:'Adresse + NAF2 compatibles, attribution non confirmée'});
+ }
+ }
+ return [...out.values()];
+}
+async function processQueue(requested){
+ busy=true;paused=false;$('search').disabled=true;$('pause').disabled=false;$('resume').disabled=true;
+ for(let i=processed;i<sources.length;i++){
+  if(paused)break;
+  const x=sources[i];
+  try{prospects.push(...await enrich(x,requested));}catch(e){failedSources.push(x);setStatus('Erreur sur une adresse : '+e.message+' — poursuite du traitement');}
+  processed=i+1;
+  $('jobProgress').value=sources.length?Math.round(processed/sources.length*100):100;
+  $('jobState').textContent='Enrichissement '+processed+'/'+sources.length+' · '+prospects.length+' entreprises · '+failedSources.length+' erreurs';
+  render();
+  if(i%5===0||i===sources.length-1)await saveJob();
+ }
+ busy=false;$('search').disabled=false;$('pause').disabled=true;$('resume').disabled=processed>=sources.length;$('retry').disabled=!failedSources.length;
+ await saveJob();
+ if(paused){$('jobState').textContent='Traitement en pause — reprise possible';setStatus('Traitement suspendu. Les résultats sont sauvegardés dans ce navigateur.');}
+ else{setStatus('Traitement terminé : '+prospects.length+' entreprises. '+failedSources.length+' adresses en erreur. Export possible.');}
+ render();
+}
+async function run(){
+ if(busy)return;const requested=validNafs();busy=true;paused=false;jobToken++;$('search').disabled=true;sources=[];prospects=[];processed=0;failedSources=[];render();
+ try{
+ const q=$('city').value.trim();if(!q)throw Error('Saisis une commune.');
+ const cities=await getCommunes(q,Number($('radius').value)),meta=await api(ENEDIS);window.wattCityCoords=Object.fromEntries(cities.filter(c=>c.centre?.coordinates).map(c=>[norm(c.nom),c.centre.coordinates]));
+ const keys=(meta.schema||[]).map(f=>typeof f==='string'?f:f.key||f.name).filter(Boolean);
+ const insee=keys.find(k=>/^(code_?insee|code_?commune|code_?commune_?insee)$/i.test(k));
+ const city=keys.find(k=>/^(nom_?commune|commune|libelle_?commune)$/i.test(k));
+ const key=insee||city;if(!key)throw Error('Champ commune Enedis introuvable');
+ for(let i=0;i<cities.length;i++){
+  const c=cities[i],v=key===insee?c.code:c.nom;
+  try{const d=await api(ENEDIS+'/lines?size='+$('pageSize').value+'&qs='+encodeURIComponent(key+':'+JSON.stringify(v)));
+   const rows=Array.isArray(d)?d:d.results||d.lines||d.data||[];
+   sources.push(...rows.filter(r=>norm(r[key])===norm(v)).map(normalizeEnedis));
+  }catch(e){setStatus('Enedis : commune '+c.nom+' inaccessible : '+e.message);}
+  $('jobState').textContent='Collecte Enedis '+(i+1)+'/'+cities.length;
+ }
+ const min=Number($('mwhMin').value||0),max=$('mwhMax').value===''?Infinity:Number($('mwhMax').value);
+ sources=sources.filter(x=>x.kwh!=null&&x.nafEnedis&&nafSectorMatch(x.nafEnedis,requested)&&x.kwh/1000>=min&&x.kwh/1000<=max);
+ if(!sources.length)throw Error('Aucune adresse Enedis exploitable.');
+ await saveJob();busy=false;await processQueue(requested);
+ }catch(e){busy=false;$('search').disabled=false;setStatus('Erreur : '+e.message,true);}
+}
+const choices=['SAS','SASU','SARL','EURL','SCI','SA','SNC','EI','ASSO','OTHER'];
+$('legalOptions').innerHTML=choices.map(k=>`<label><input type="checkbox" value="${k}">${html(legalNames[k])}</label>`).join('');
+document.querySelectorAll('#legalOptions input').forEach(x=>x.addEventListener('change',()=>{const n=selectedLegal().length;$('legalSummary').textContent=n?n+' forme(s) sélectionnée(s) ▾':'Toutes les formes juridiques ▾';render();}));
+['nafs','mwhMin','mwhMax','staffMin','staffMax','createdMin','createdMax'].forEach(id=>$(id).addEventListener('input',render));
+$('search').onclick=run;
+$('reset').onclick=()=>{['nafs','staffMin','staffMax','createdMin','createdMax','mwhMax'].forEach(id=>$(id).value='');$('mwhMin').value='0';document.querySelectorAll('#legalOptions input').forEach(x=>x.checked=false);$('legalSummary').textContent='Toutes les formes juridiques ▾';render();};
+function exportCsv(rows,filename){
+ const head=['entreprise','forme_juridique','code_juridique','siren','siret','naf_sirene','activite_naf','effectif_reel','effectifs_tranche','effectifs_min','effectifs_max','date_creation','dirigeant_nom_prenom','dirigeant_fonction','adresse_enedis','commune','annee_enedis','naf2_enedis','consommation_kwh','consommation_mwh','lien_google_maps'];
+ const lines=[head,...rows.map(p=>[p.name,p.legal,p.legalCode,p.siren,p.siret,p.naf,p.nafLabel,p.staff.exact,p.staff.label,p.staff.min,p.staff.max,p.creation,p.directorNames,p.directorRoles,p.source.address,p.source.city,p.source.year,p.source.nafEnedis,p.source.kwh,p.source.kwh/1000,googleUrl(p)])];
+ const csv='\ufeff'+lines.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function saveCRM(rows){
+ const batchId='lot-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);const batchSirets=[];
+ const stats={new:0,updated:0,unchanged:0,invalid:0};
+ const seen=new Set();
+ for(const p of rows){
+  const id=String(p.siret||'').replace(/\D/g,'');
+  if(!/^\d{14}$/.test(id)){stats.invalid++;continue;}
+  if(seen.has(id))continue;
+  seen.add(id);batchSirets.push(id);
+  const old=await storeGet('crm',id);
+  const now=new Date().toISOString();
+  const history={...(old?.consumptionHistory||{})};
+  const year=String(p.source?.year||'').trim();
+  if(year && Number.isFinite(p.source?.kwh))history[year]={kwh:p.source.kwh,naf2:p.source.nafEnedis,address:p.source.address,city:p.source.city,updatedAt:now};
+  const merged={...old,...p,siret:id,consumptionHistory:history,savedAt:old?.savedAt||now,updatedAt:now,coords:p.coords||window.wattCityCoords?.[norm(p.source?.city)]||old?.coords||null,importIds:[...new Set([...(old?.importIds||[]),batchId])]};
+  if(old){
+   // Do not replace useful existing values with empty API values.
+   for(const key of ['name','naf','nafLabel','legal','legalCode','creation','directorNames','directorRoles'])if(!p[key]||p[key]==='—'||p[key]==='Libellé non disponible')merged[key]=old[key]||p[key];
+   if(p.staff?.exact==null&&old.staff?.exact!=null)merged.staff=old.staff;
+   stats.updated++;
+  }else stats.new++;
+  await storePut('crm',merged);
+ }
+ if(batchSirets.length)await storePut('imports',{id:batchId,date:new Date().toISOString(),sirets:batchSirets,filters:readSearchFilters(),name:($('city').value||'Recherche')+' · '+(nafList().join(', ')||'Tous secteurs')});
+ await renderCRM();
+ const message=`BDD : ${stats.new} nouveau(x) SIRET, ${stats.updated} fiche(s) existante(s) mise(s) à jour, ${stats.invalid} SIRET invalide(s) ignoré(s). Aucun doublon créé.`;
+ setStatus(message);
+ return stats;
+}
+let crmAll=[],crmVisible=[],crmSelected=new Set(),crmGeoCoords=null,crmGeoCity='';
+function readSearchFilters(){return Object.fromEntries(['city','radius','nafs','mwhMin','mwhMax','staffMin','staffMax','createdMin','createdMax'].map(id=>[id,$(id).value]));}
+function crmLegalSelected(){return [...document.querySelectorAll('#crmLegalOptions input:checked')].map(x=>x.value);}
+function crmFiltered(){
+ const q=norm($('crmQuery').value),city=norm($('crmCity').value),radius=Number($('crmRadius').value),nafs=$('crmNafs').value.split(',').map(norm).filter(Boolean),legal=crmLegalSelected();
+ const min=optionalNumber('crmMwhMin'),max=optionalNumber('crmMwhMax'),smin=optionalNumber('crmStaffMin'),smax=optionalNumber('crmStaffMax'),dmin=$('crmCreatedMin').value,dmax=$('crmCreatedMax').value;
+ return crmAll.filter(p=>{
+  if(q&&!norm([p.name,p.siret,p.siren,p.naf,p.source?.city,p.source?.address,p.legal].join(' ')).includes(q))return false;
+  if(city){if(radius===0){if(norm(p.source?.city)!==city)return false;}else if(!crmGeoCoords||!p.coords||km(crmGeoCoords[1],crmGeoCoords[0],p.coords[1],p.coords[0])>radius)return false;}
+  if(!nafMatch(p.naf,nafs)||legal.length&&!legal.includes(p.legalKey||legalForm(p.legalCode,p.legal)))return false;
+  const mwh=p.source?.kwh==null?null:p.source.kwh/1000;
+  if(min!==null&&(mwh===null||mwh<min)||max!==null&&(mwh===null||mwh>max))return false;
+  if(smin!==null&&(p.staff?.max==null||p.staff.max<smin)||smax!==null&&(p.staff?.min==null||p.staff.min>smax))return false;
+  if(dmin&&(!p.creation||p.creation<dmin)||dmax&&(!p.creation||p.creation>dmax))return false;
+  return true;
+ });
+}
+function optionalNumber(id){const v=$(id).value;return v===''?null:Number(v);}
+async function updateCrmGeo(){const name=$('crmCity').value.trim();crmGeoCoords=null;crmGeoCity=name;if(!name||Number($('crmRadius').value)===0){drawCRM();return;}try{const cities=await getCommunes(name,0);if(crmGeoCity!==name)return;crmGeoCoords=cities[0]?.centre?.coordinates||null;}catch(e){$('crmGeoNote').textContent='Impossible de localiser cette commune : '+e.message;}drawCRM();}
+function drawCRM(){crmVisible=crmFiltered();$('crmCount').textContent=crmVisible.length+' prospect(s) sur '+crmAll.length+' enregistré(s) · '+crmSelected.size+' sélectionné(s)';
+ const noCoords=crmAll.filter(p=>!p.coords).length;
+ $('crmGeoNote').textContent=$('crmCity').value&&Number($('crmRadius').value)>0?(crmGeoCoords?`${noCoords} fiche(s) sans coordonnées exclue(s) du filtre de rayon.`:'Saisis une commune valide pour le filtre de rayon.'):'Le rayon utilise les coordonnées de la commune enregistrées au moment de la recherche.';
+ $('crmRows').innerHTML=crmVisible.map(p=>`<tr><td><input class="crmPick" type="checkbox" data-siret="${html(p.siret)}" ${crmSelected.has(p.siret)?'checked':''}></td><td>${html(p.name)}</td><td>${html(p.legal)}</td><td>${html(p.siret)}</td><td>${html(p.naf)}</td><td>${html(p.nafLabel)}</td><td>${p.staff?.exact??'—'}</td><td>${html(p.staff?.label)}</td><td>${html(p.creation)}</td><td>${html(p.directorNames)}</td><td>${html(p.directorRoles)}</td><td>${html(p.source?.city)}</td><td>${fmt(p.source?.kwh==null?null:p.source.kwh/1000)}</td><td><a href="${googleUrl(p)}" target="_blank" rel="noopener">Maps</a></td></tr>`).join('')||'<tr><td colspan="14">Aucun prospect sauvegardé pour ces filtres.</td></tr>';
+ $('crmSelectAll').checked=crmVisible.length>0&&crmVisible.every(p=>crmSelected.has(p.siret));
+ return crmVisible;
+}
+async function renderCRM(){crmAll=await storeAll('crm');drawCRM();await renderImports();await renderTrash();return crmVisible;}
+function uniqueId(prefix){return prefix+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);}
+async function deleteProspects(ids){ids=[...new Set(ids)].filter(Boolean);if(!ids.length){alert('Sélectionne au moins un prospect.');return;}if(!confirm('Supprimer '+ids.length+' fiche(s) de la BDD ? Elles pourront être restaurées depuis la corbeille.'))return;
+ const records=(await Promise.all(ids.map(id=>storeGet('crm',id)))).filter(Boolean);if(!records.length)return;
+ const imports=await storeAll('imports');const changed=[];
+ for(const batch of imports){const matching=batch.sirets.filter(id=>ids.includes(id));if(matching.length){changed.push({id:batch.id,removed:matching});batch.sirets=batch.sirets.filter(id=>!ids.includes(id));await storePut('imports',batch);}}
+ await storePut('trash',{id:uniqueId('trash'),kind:'prospects',date:new Date().toISOString(),records,changed});
+ for(const p of records){await storeDelete('crm',p.siret);crmSelected.delete(p.siret);}
+ await renderCRM();alert(records.length+' fiche(s) déplacée(s) dans la corbeille.');
+}
+async function deleteImport(id){const batch=await storeGet('imports',id);if(!batch)return;const other=await storeAll('imports');const protectedIds=new Set(other.filter(x=>x.id!==id).flatMap(x=>x.sirets));const deleted=[];const modified=[];
+ for(const siret of batch.sirets){const p=await storeGet('crm',siret);if(!p)continue;if(protectedIds.has(siret)){p.importIds=(p.importIds||[]).filter(x=>x!==id);modified.push({siret,oldImportIds:[...(p.importIds||[]),id]});}else deleted.push(p);}
+ if(!confirm('Supprimer le lot « '+batch.name+' » ? '+deleted.length+' fiche(s) seront mises à la corbeille et '+(batch.sirets.length-deleted.length)+' fiche(s) partagées seront conservées.'))return;
+ // Record the reversible deletion before applying it.
+ await storePut('trash',{id:uniqueId('trash'),kind:'import',date:new Date().toISOString(),batch,records:deleted,modified});
+ for(const x of modified){const p=await storeGet('crm',x.siret);if(p){p.importIds=(p.importIds||[]).filter(v=>v!==id);await storePut('crm',p);}}
+ for(const p of deleted)await storeDelete('crm',p.siret);
+ await storeDelete('imports',id);await renderCRM();
+}
+async function restoreTrash(id){const item=await storeGet('trash',id);if(!item)return;if(!confirm('Restaurer cet élément depuis la corbeille ?'))return;
+ if(item.kind==='import'){const existing=await storeGet('imports',item.batch.id);if(!existing)await storePut('imports',item.batch);for(const p of item.records){const old=await storeGet('crm',p.siret);if(old){old.importIds=[...new Set([...(old.importIds||[]),item.batch.id])];await storePut('crm',old);}else await storePut('crm',p);}for(const x of item.modified||[]){const p=await storeGet('crm',x.siret);if(p){p.importIds=[...new Set([...(p.importIds||[]),item.batch.id])];await storePut('crm',p);}}}
+ else{for(const p of item.records){const old=await storeGet('crm',p.siret);if(!old)await storePut('crm',p);else{old.importIds=[...new Set([...(old.importIds||[]),...(p.importIds||[])])];await storePut('crm',old);}}for(const x of item.changed||[]){const batch=await storeGet('imports',x.id);if(batch){batch.sirets=[...new Set([...batch.sirets,...x.removed])];await storePut('imports',batch);}}}
+ await storeDelete('trash',id);await renderCRM();
+}
+async function renderImports(){const batches=(await storeAll('imports')).sort((a,b)=>b.date.localeCompare(a.date));$('importsList').innerHTML=batches.map(b=>`<div class="importrow"><div><strong>${html(b.name||b.id)}</strong><p>${html(new Date(b.date).toLocaleString('fr-FR'))} · ${b.sirets.length} SIRET · ${html(JSON.stringify(b.filters||{}))}</p></div><button class="danger" data-delete-import="${html(b.id)}">Supprimer le lot</button></div>`).join('')||'<p class="hint">Aucun import enregistré dans cet historique. Les anciennes fiches V14 restent disponibles dans la BDD.</p>';}
+async function renderTrash(){const entries=(await storeAll('trash')).sort((a,b)=>b.date.localeCompare(a.date));$('trashList').innerHTML=entries.map(e=>`<div class="importrow"><div><strong>${e.kind==='import'?'Lot : '+html(e.batch?.name):'Prospects supprimés'}</strong><p>${html(new Date(e.date).toLocaleString('fr-FR'))} · ${(e.records||[]).length} fiche(s) concernée(s)</p></div><div class="actions"><button class="alt" data-restore="${html(e.id)}">Restaurer</button><button class="danger" data-purge="${html(e.id)}">Effacer définitivement</button></div></div>`).join('')||'<p class="hint">Corbeille vide.</p>';}
+$('tabSearch').onclick=()=>{$('searchView').classList.remove('hidden');$('crmView').classList.add('hidden');$('tabSearch').classList.add('active');$('tabCRM').classList.remove('active');};
+$('tabCRM').onclick=async()=>{$('searchView').classList.add('hidden');$('crmView').classList.remove('hidden');$('tabSearch').classList.remove('active');$('tabCRM').classList.add('active');await renderCRM();};
+$('crmRefresh').onclick=renderCRM;
+$('crmExport').onclick=()=>exportCsv(crmFiltered(),'wattlead_v15_bdd.csv');
+const crmFilterIds=['crmQuery','crmNafs','crmMwhMin','crmMwhMax','crmStaffMin','crmStaffMax','crmCreatedMin','crmCreatedMax'];
+crmFilterIds.forEach(id=>$(id).addEventListener('input',drawCRM));
+$('crmCity').addEventListener('change',updateCrmGeo);$('crmRadius').addEventListener('change',updateCrmGeo);
+$('crmLegalOptions').innerHTML=choices.map(k=>`<label><input type="checkbox" value="${k}">${html(legalNames[k])}</label>`).join('');
+document.querySelectorAll('#crmLegalOptions input').forEach(x=>x.addEventListener('change',()=>{$('crmLegalSummary').textContent=crmLegalSelected().length?crmLegalSelected().length+' forme(s) sélectionnée(s) ▾':'Toutes les formes juridiques ▾';drawCRM();}));
+$('crmClearFilters').onclick=()=>{[...crmFilterIds,'crmCity'].forEach(id=>$(id).value='');$('crmRadius').value='0';document.querySelectorAll('#crmLegalOptions input').forEach(x=>x.checked=false);$('crmLegalSummary').textContent='Toutes les formes juridiques ▾';crmGeoCoords=null;drawCRM();};
+$('crmRows').addEventListener('change',e=>{if(!e.target.matches('.crmPick'))return;const id=e.target.dataset.siret;if(e.target.checked)crmSelected.add(id);else crmSelected.delete(id);drawCRM();});
+$('crmSelectAll').onchange=e=>{for(const p of crmVisible){if(e.target.checked)crmSelected.add(p.siret);else crmSelected.delete(p.siret);}drawCRM();};
+$('crmDeleteSelected').onclick=()=>deleteProspects([...crmSelected]);
+$('showImports').onclick=()=>{$('importsPanel').classList.remove('hidden');$('trashPanel').classList.add('hidden');};
+$('showTrash').onclick=()=>{$('importsPanel').classList.add('hidden');$('trashPanel').classList.remove('hidden');};
+$('importsList').addEventListener('click',e=>{const b=e.target.closest('[data-delete-import]');if(b)deleteImport(b.dataset.deleteImport);});
+$('trashList').addEventListener('click',async e=>{const restore=e.target.closest('[data-restore]'),purge=e.target.closest('[data-purge]');if(restore)await restoreTrash(restore.dataset.restore);if(purge&&confirm('Effacer définitivement cet élément ? Cette action est irréversible.')){await storeDelete('trash',purge.dataset.purge);await renderTrash();}});
+$('export').onclick=()=>$('exportDialog').showModal();
+$('cancelExport').onclick=()=>$('exportDialog').close();
+$('exportOnly').onclick=()=>{exportCsv(filtered(),'wattlead_v14_export.csv');$('exportDialog').close();};
+$('exportAndSave').onclick=async()=>{const rows=filtered();await saveCRM(rows);exportCsv(rows,'wattlead_v14_export.csv');$('exportDialog').close();};
+$('saveOnly').onclick=async()=>{await saveCRM(filtered());$('exportDialog').close();setStatus('Prospects enregistrés dans la base BDD locale.');};
+$('pause').onclick=()=>{paused=true;$('jobState').textContent='Mise en pause demandée…';};
+$('resume').onclick=()=>processQueue(nafList());
+$('retry').onclick=async()=>{if(busy||!failedSources.length)return;const retry=failedSources.splice(0);sources=[...sources,...retry];await saveJob();await processQueue(nafList());};
+(async()=>{try{const saved=await storeGet('jobs','current');if(saved){sources=saved.sources||[];prospects=saved.prospects||[];processed=saved.processed||0;failedSources=saved.failedSources||[];render();$('resume').disabled=!(processed<sources.length);$('retry').disabled=!failedSources.length;$('jobState').textContent='Dernier traitement restauré : '+processed+'/'+sources.length+' adresses';$('jobProgress').value=sources.length?Math.round(processed/sources.length*100):0;}await renderCRM();}catch(e){setStatus('Stockage local indisponible : '+e.message,true);}})();
+</script></body></html>
